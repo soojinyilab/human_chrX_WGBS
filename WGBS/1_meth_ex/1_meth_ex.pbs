@@ -1,0 +1,26 @@
+#PBS -N rm_hg38_XY_meth_ex
+#PBS -A GT-sy58-biocluster
+#PBS -l nodes=1:ppn=5
+#PBS -l walltime=20:00:00
+#PBS -l mem=5gb
+#PBS -o outputs/${IDARG}_XY_hg38_bismark_meth_ex.out
+#PBS -j oe
+#PBS -m a
+#PBS -M rmorgan61@gatech.edu
+
+
+cd ~/p-sy58-0/remapping/
+
+module load python/2.7
+module load gcc/10.1.0
+module load intel/19.0.5
+module load samtools/1.14
+
+echo "Starting methylation extraction"
+
+bismark_methylation_extractor -p --comprehensive --parallel 5 \
+	-o ./meth_extract/human_XY \
+	./dedup/human_XY/${IDARG}_processed_bismark_bt2_pe.deduplicated.bam \
+	--gzip
+
+echo "Complete"

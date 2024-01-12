@@ -1,0 +1,30 @@
+#PBS -N rm_hg38_bismark
+#PBS -A GT-sy58-biocluster
+#PBS -l nodes=1:ppn=4
+#PBS -l walltime=362:00:00
+#PBS -l mem=50gb
+#PBS -o outputs/${IDARG}_hg38_XY_bismark.out
+#PBS -j oe
+#PBS -m a
+#PBS -M rmorgan61@gatech.edu
+
+echo "Starting hg38 mapping"
+
+cd ~/p-sy58-0/remapping
+
+module load python/2.7
+module load gcc/10.1.0
+module load intel/19.0.5
+module load samtools/1.14
+module load bowtie2/2.3.5.1
+
+bismark --bowtie2 --multicore 4 -n 1 \
+	~/p-sy58-0/genomes/human_XY/ \
+	-1 ~/p-sy58-0/remapping/fasta_files/${IDARG}_R1_phiXremoved.fq.gz \
+	-2 ~/p-sy58-0/remapping/fasta_files/${IDARG}_R2_phiXremoved.fq.gz \
+	-o ./bs_mapped/human_XY/ \
+	--temp_dir ./temp_map/human_XY/map_temp_${IDARG}/ \
+	--gzip \
+	--bam \
+
+echo "Mapping complete"

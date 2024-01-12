@@ -1,0 +1,21 @@
+#PBS -N rm_hg38_bismark_genome_preparation
+#PBS -A GT-sy58-biocluster
+#PBS -l nodes=1:ppn=4
+#PBS -l walltime=8:00:00
+#PBS -l mem=50gb
+#PBS -o outputs/hg38_bismark_genome_prep.out
+#PBS -j oe
+#PBS -m a
+#PBS -M rmorgan61@gatech.edu
+
+echo "Starting genome preparation"
+
+module load python/2.7
+module load gcc/10.1.0
+module load intel/19.0.5
+module load samtools/1.14
+module load bowtie2/2.3.5.1
+
+bismark_genome_preparation ~/p-sy58-0/genomes/human_XY/
+
+echo "Genome preparation complete"
