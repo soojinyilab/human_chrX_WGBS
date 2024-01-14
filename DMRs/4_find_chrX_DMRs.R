@@ -5,9 +5,7 @@ setwd("~/p-sy58-0/DMR_scripts/data")
 
 covariates <- read.csv('covariates.csv')
 genetic_PCs <- read.csv('top10_PC_scores.csv')
-#bs.chrX <- readRDS('bs_chrX_nosnps_min5_percent80.Rds')
-bs.chrX <- readRDS('bs_chrX_nosnps_min5_percent80_rm05.Rds')
-#bs.chrX <- readRDS('bs_chrX_nosnps_min5_percent80_rm10.Rds')
+bs.chrX <- readRDS('bs_chrX_nosnps_min5_percent80.Rds')
 
 sample_match <- match(colnames(bs.chrX), covariates[,1])
 matched_covariates <- covariates[sample_match,]
@@ -25,11 +23,7 @@ design <- data.frame(as.factor(matched_covariates[,2]), as.factor(matched_covari
 
 colnames(design) <- c('diagnosis', 'cell_type', 'sex', 'age', 'bank', 'pmi', 'hemi', 'conv', paste0('pc', 1:10))
 
-#X <- model.matrix(~diagnosis+cell_type+sex+age+bank+pmi+hemi+conv+pc1+pc2+pc3+pc4+pc5+pc6+pc7+pc8+pc9+pc10, design)
-#dim(X)
-
 DMLfit = DMLfit.multiFactor(bs.chrX, design, ~diagnosis+cell_type+sex+age+bank+pmi+hemi+conv+pc1+pc2+pc3+pc4+pc5+pc6+pc7+pc8+pc9+pc10+cell_type:sex)
-colnames(DMLfit$X)
 
 cell_DMLtest = DMLtest.multiFactor(DMLfit, coef='cell_typeOLIG2')
 sex_DMLtest = DMLtest.multiFactor(DMLfit, coef='sexM')
@@ -38,8 +32,6 @@ interaction_DMLtest = DMLtest.multiFactor(DMLfit, coef='cell_typeOLIG2:sexM')
 write.csv(cell_DMLtest, 'DSS_cell_raw_gPC_rm05.csv', quote=F, row.names=F)
 write.csv(sex_DMLtest, 'DSS_sex_raw_gPC_rm05.csv', quote=F, row.names=F)
 write.csv(interaction_DMLtest, 'DSS_sex_cell_interaction_raw_gPC_rm05.csv', quote=F, row.names=F)
-
-head(cell_DMLtest)
 
 # calculate n for Bonferroni correction
 num_samples <- nrow(cell_DMLtest) - length(which(is.na(cell_DMLtest[,4])))
